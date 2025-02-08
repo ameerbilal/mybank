@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المال</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            direction: rtl;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2, h3 {
+            color: #333;
+        }
+        input, button, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .amounts {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .amounts div {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>إدارة المال</h2>
+
+        <h3>إدخال المبلغ الأساسي</h3>
+        <input type="number" id="totalAmount" placeholder="أدخل المبلغ">
+        <button onclick="splitMoney()">تقسيم المبلغ</button>
+
+        <h3>الأموال الحالية</h3>
+        <div class="amounts">
+            <div>الشخصي: <span id="personal">0</span> $</div>
+            <div>الاستثماري: <span id="investment">0</span> $</div>
+            <div>الإجباري: <span id="mandatory">0</span> $</div>
+        </div>
+
+        <h3>سحب مبلغ من قسم</h3>
+        <select id="category">
+            <option value="personal">الشخصي</option>
+            <option value="investment">الاستثماري</option>
+            <option value="mandatory">الإجباري</option>
+        </select>
+        <input type="number" id="withdrawAmount" placeholder="أدخل المبلغ">
+        <button onclick="withdrawMoney()">سحب</button>
+    </div>
+
+    <script>
+        // تحميل القيم المحفوظة من Local Storage عند فتح الصفحة
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("personal").textContent = localStorage.getItem("personal") || 0;
+            document.getElementById("investment").textContent = localStorage.getItem("investment") || 0;
+            document.getElementById("mandatory").textContent = localStorage.getItem("mandatory") || 0;
+        });
+
+        function splitMoney() {
+            let total = parseFloat(document.getElementById("totalAmount").value);
+            if (isNaN(total) || total <= 0) {
+                alert("يرجى إدخال مبلغ صالح.");
+                return;
+            }
+
+            let personal = total * 0.5;  // 50% للشخصي
+            let investment = total * 0.3; // 30% للاستثماري
+            let mandatory = total * 0.2; // 20% للإجباري
+
+            localStorage.setItem("personal", personal);
+            localStorage.setItem("investment", investment);
+            localStorage.setItem("mandatory", mandatory);
+
+            document.getElementById("personal").textContent = personal.toFixed(2);
+            document.getElementById("investment").textContent = investment.toFixed(2);
+            document.getElementById("mandatory").textContent = mandatory.toFixed(2);
+        }
+
+        function withdrawMoney() {
+            let category = document.getElementById("category").value;
+            let withdrawAmount = parseFloat(document.getElementById("withdrawAmount").value);
+            let currentAmount = parseFloat(localStorage.getItem(category)) || 0;
+
+            if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
+                alert("يرجى إدخال مبلغ صالح.");
+                return;
+            }
+
+            if (withdrawAmount > currentAmount) {
+                alert("المبلغ المطلوب سحبه غير متوفر.");
+                return;
+            }
+
+            let newAmount = currentAmount - withdrawAmount;
+            localStorage.setItem(category, newAmount);
+            document.getElementById(category).textContent = newAmount.toFixed(2);
+        }
+    </script>
+
+</body>
+</html>
