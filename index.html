@@ -122,6 +122,21 @@
         <input type="number" id="withdrawAmount" placeholder="أدخل المبلغ">
         <button onclick="withdrawMoney()">سحب</button>
 
+        <h3>تحويل الأموال بين الفئات</h3>
+        <select id="fromCategory">
+            <option value="personal">الشخصي</option>
+            <option value="investment">الاستثماري</option>
+            <option value="mandatory">الإجباري</option>
+        </select>
+        إلى
+        <select id="toCategory">
+            <option value="personal">الشخصي</option>
+            <option value="investment">الاستثماري</option>
+            <option value="mandatory">الإجباري</option>
+        </select>
+        <input type="number" id="transferAmount" placeholder="أدخل المبلغ">
+        <button onclick="transferMoney()">تحويل</button>
+
         <h3>المصاريف الإلزامية (To-Do List)</h3>
         <input type="text" id="todoText" placeholder="أدخل اسم المصروف">
         <input type="number" id="todoAmount" placeholder="المبلغ">
@@ -131,7 +146,6 @@
     </div>
 
     <script>
-        // تحميل القيم المحفوظة عند فتح الصفحة
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("personal").textContent = localStorage.getItem("personal") || 0;
             document.getElementById("investment").textContent = localStorage.getItem("investment") || 0;
@@ -146,7 +160,7 @@
                 return;
             }
 
-            let amountEach = (total * 0.33).toFixed(2); // 33% لكل فئة
+            let amountEach = (total * 0.33).toFixed(2);
 
             localStorage.setItem("personal", amountEach);
             localStorage.setItem("investment", amountEach);
@@ -162,54 +176,38 @@
             let withdrawAmount = parseFloat(document.getElementById("withdrawAmount").value);
             let currentAmount = parseFloat(localStorage.getItem(category)) || 0;
 
-            if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
-                alert("يرجى إدخال مبلغ صالح.");
+            if (isNaN(withdrawAmount) || withdrawAmount <= 0 || withdrawAmount > currentAmount) {
+                alert("مبلغ غير صالح.");
                 return;
             }
 
-            if (withdrawAmount > currentAmount) {
-                alert("المبلغ المطلوب سحبه غير متوفر.");
+            localStorage.setItem(category, currentAmount - withdrawAmount);
+            document.getElementById(category).textContent = (currentAmount - withdrawAmount).toFixed(2);
+        }
+
+        function transferMoney() {
+            let from = document.getElementById("fromCategory").value;
+            let to = document.getElementById("toCategory").value;
+            let amount = parseFloat(document.getElementById("transferAmount").value);
+
+            if (from === to || isNaN(amount) || amount <= 0) {
+                alert("يرجى اختيار فئات مختلفة وإدخال مبلغ صالح.");
                 return;
             }
 
-            let newAmount = currentAmount - withdrawAmount;
-            localStorage.setItem(category, newAmount);
-            document.getElementById(category).textContent = newAmount.toFixed(2);
-        }
+            let fromAmount = parseFloat(localStorage.getItem(from)) || 0;
+            let toAmount = parseFloat(localStorage.getItem(to)) || 0;
 
-        function addTodo() {
-            let text = document.getElementById("todoText").value;
-            let amount = document.getElementById("todoAmount").value;
-            if (!text || !amount || isNaN(amount) || amount <= 0) {
-                alert("يرجى إدخال بيانات صحيحة.");
+            if (amount > fromAmount) {
+                alert("لا يوجد رصيد كافٍ.");
                 return;
             }
 
-            let todoList = JSON.parse(localStorage.getItem("todos")) || [];
-            todoList.push({ text, amount });
-            localStorage.setItem("todos", JSON.stringify(todoList));
-            loadTodos();
-        }
+            localStorage.setItem(from, fromAmount - amount);
+            localStorage.setItem(to, toAmount + amount);
 
-        function loadTodos() {
-            let todoList = JSON.parse(localStorage.getItem("todos")) || [];
-            let listContainer = document.getElementById("todoList");
-            listContainer.innerHTML = "";
-            todoList.forEach((todo, index) => {
-                listContainer.innerHTML += `
-                    <div class="todo-item">
-                        <span>${todo.text}: ${todo.amount} $</span>
-                        <button class="delete-btn" onclick="deleteTodo(${index})">X</button>
-                    </div>
-                `;
-            });
-        }
-
-        function deleteTodo(index) {
-            let todoList = JSON.parse(localStorage.getItem("todos")) || [];
-            todoList.splice(index, 1);
-            localStorage.setItem("todos", JSON.stringify(todoList));
-            loadTodos();
+            document.getElementById(from).textContent = (fromAmount - amount).toFixed(2);
+            document.getElementById(to).textContent = (toAmount + amount).toFixed(2);
         }
     </script>
 
