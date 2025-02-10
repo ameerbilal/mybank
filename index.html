@@ -19,37 +19,39 @@
 
         .container {
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
             margin: 20px auto;
             padding: 20px;
             background-color: #1e1e1e;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        h2, h3 {
+            color: white;
+        }
+
+        input, button, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #2c2c2c;
+            color: white;
         }
 
         button {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            font-size: 16px;
-            border-radius: 5px;
-            background-color: #ff9800;
+            background-color: #FF9800;
             color: white;
-            font-weight: bold;
-            cursor: pointer;
             border: none;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         button:hover {
             background-color: #e68900;
-        }
-
-        .section {
-            display: none;
-            background-color: #2c2c2c;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
         }
 
         .amounts {
@@ -58,34 +60,13 @@
             padding: 10px;
             background-color: #2c2c2c;
             border-radius: 5px;
+            margin-top: 10px;
         }
 
-        .log-section, .todo-list {
-            max-height: 150px;
-            overflow-y: auto;
-            text-align: left;
-            background-color: #2c2c2c;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .log-item, .todo-item {
-            padding: 5px;
-            border-bottom: 1px solid #444;
-        }
-
-        .delete-btn {
-            background-color: red;
-            border: none;
-            color: white;
-            padding: 5px;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-
-        .clear-btn {
-            background-color: #d32f2f;
-            margin-top: 15px;
+        .amounts div {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -94,71 +75,81 @@
     <div class="container">
         <h2>إدارة المال</h2>
 
-        <button onclick="toggleSection('moneySection')">💰 إدارة الأموال</button>
-        <div id="moneySection" class="section">
-            <h3>إدخال المبلغ الأساسي</h3>
-            <input type="number" id="totalAmount" placeholder="أدخل المبلغ">
-            <button onclick="splitMoney()">تقسيم المبلغ</button>
+        <h3>إدخال المبلغ الأساسي</h3>
+        <input type="number" id="totalAmount" placeholder="أدخل المبلغ">
+        <button onclick="splitMoney()">تقسيم المبلغ</button>
 
-            <h3>الأموال الحالية</h3>
-            <div class="amounts">
-                <div>الشخصي: <span id="personal">0.00</span> JOD</div>
-                <div>الاستثماري: <span id="investment">0.00</span> JOD</div>
-                <div>الإجباري: <span id="mandatory">0.00</span> JOD</div>
-            </div>
+        <h3>الأموال الحالية</h3>
+        <div class="amounts">
+            <div>الشخصي: <span id="personal">0</span> JOD</div>
+            <div>الاستثماري: <span id="investment">0</span> JOD</div>
+            <div>الإجباري: <span id="mandatory">0</span> JOD</div>
         </div>
 
-        <button onclick="toggleSection('transferSection')">🔄 تحويل الأموال</button>
-        <div id="transferSection" class="section">
-            <h3>تحويل الأموال بين الفئات</h3>
-            <select id="fromCategory">
-                <option value="personal">الشخصي</option>
-                <option value="investment">الاستثماري</option>
-                <option value="mandatory">الإجباري</option>
-            </select>
-            <select id="toCategory">
-                <option value="personal">الشخصي</option>
-                <option value="investment">الاستثماري</option>
-                <option value="mandatory">الإجباري</option>
-            </select>
-            <input type="number" id="transferAmount" placeholder="أدخل المبلغ">
-            <button onclick="transferMoney()">تحويل</button>
-        </div>
+        <h3>تحويل الأموال بين الفئات</h3>
+        <select id="fromCategory">
+            <option value="personal">الشخصي</option>
+            <option value="investment">الاستثماري</option>
+            <option value="mandatory">الإجباري</option>
+        </select>
+        <select id="toCategory">
+            <option value="personal">الشخصي</option>
+            <option value="investment">الاستثماري</option>
+            <option value="mandatory">الإجباري</option>
+        </select>
+        <input type="number" id="transferAmount" placeholder="أدخل المبلغ">
+        <button onclick="transferMoney()">تحويل</button>
 
-        <button onclick="toggleSection('todoSection')">📋 المصاريف / الديون</button>
-        <div id="todoSection" class="section">
-            <h3>إضافة مصروف / دين</h3>
-            <input type="text" id="todoText" placeholder="أدخل الوصف">
-            <input type="number" id="todoAmount" placeholder="المبلغ">
-            <button onclick="addTodo()">إضافة</button>
-            <div id="todoList" class="todo-list"></div>
-        </div>
+        <h3>سحب مبلغ من قسم</h3>
+        <select id="withdrawCategory">
+            <option value="personal">الشخصي</option>
+            <option value="investment">الاستثماري</option>
+            <option value="mandatory">الإجباري</option>
+        </select>
+        <input type="number" id="withdrawAmount" placeholder="أدخل المبلغ">
+        <button onclick="withdrawMoney()">سحب</button>
 
-        <button class="clear-btn" onclick="clearAllData()">🗑 مسح جميع البيانات</button>
+        <h3>تصفير قسم معين</h3>
+        <select id="resetCategory">
+            <option value="personal">الشخصي</option>
+            <option value="investment">الاستثماري</option>
+            <option value="mandatory">الإجباري</option>
+        </select>
+        <button onclick="resetCategory()">تصفير</button>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", loadData);
-
-        function toggleSection(id) {
-            let section = document.getElementById(id);
-            section.style.display = section.style.display === "block" ? "none" : "block";
-        }
+        // تحميل القيم المحفوظة عند فتح الصفحة
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("personal").textContent = localStorage.getItem("personal") || 0;
+            document.getElementById("investment").textContent = localStorage.getItem("investment") || 0;
+            document.getElementById("mandatory").textContent = localStorage.getItem("mandatory") || 0;
+        });
 
         function splitMoney() {
             let total = parseFloat(document.getElementById("totalAmount").value);
-            if (isNaN(total) || total <= 0) return alert("يرجى إدخال مبلغ صالح.");
+            if (isNaN(total) || total <= 0) {
+                alert("يرجى إدخال مبلغ صالح.");
+                return;
+            }
 
-            let personal = parseFloat(localStorage.getItem("personal")) || 0;
-            let investment = parseFloat(localStorage.getItem("investment")) || 0;
-            let mandatory = parseFloat(localStorage.getItem("mandatory")) || 0;
+            let personal = parseFloat(localStorage.getItem("personal") || 0);
+            let investment = parseFloat(localStorage.getItem("investment") || 0);
+            let mandatory = parseFloat(localStorage.getItem("mandatory") || 0);
 
-            let newTotal = personal + investment + mandatory + total;
-            let amountEach = (newTotal / 3).toFixed(2);
+            let amountEach = (total * 0.33).toFixed(2);
 
-            saveData("personal", amountEach);
-            saveData("investment", amountEach);
-            saveData("mandatory", amountEach);
+            personal += parseFloat(amountEach);
+            investment += parseFloat(amountEach);
+            mandatory += parseFloat(amountEach);
+
+            localStorage.setItem("personal", personal.toFixed(2));
+            localStorage.setItem("investment", investment.toFixed(2));
+            localStorage.setItem("mandatory", mandatory.toFixed(2));
+
+            document.getElementById("personal").textContent = personal.toFixed(2);
+            document.getElementById("investment").textContent = investment.toFixed(2);
+            document.getElementById("mandatory").textContent = mandatory.toFixed(2);
         }
 
         function transferMoney() {
@@ -166,49 +157,50 @@
             let to = document.getElementById("toCategory").value;
             let amount = parseFloat(document.getElementById("transferAmount").value);
 
-            if (from === to || isNaN(amount) || amount <= 0) return alert("يرجى إدخال مبلغ صالح للتحويل.");
+            if (from === to || isNaN(amount) || amount <= 0) {
+                alert("يرجى اختيار فئة صحيحة ومبلغ صالح.");
+                return;
+            }
 
-            let fromBalance = parseFloat(localStorage.getItem(from)) || 0;
-            let toBalance = parseFloat(localStorage.getItem(to)) || 0;
+            let fromAmount = parseFloat(localStorage.getItem(from)) || 0;
+            let toAmount = parseFloat(localStorage.getItem(to)) || 0;
 
-            if (amount > fromBalance) return alert("المبلغ غير كافٍ.");
+            if (amount > fromAmount) {
+                alert("المبلغ غير كافٍ.");
+                return;
+            }
 
-            saveData(from, (fromBalance - amount).toFixed(2));
-            saveData(to, (toBalance + amount).toFixed(2));
+            localStorage.setItem(from, (fromAmount - amount).toFixed(2));
+            localStorage.setItem(to, (toAmount + amount).toFixed(2));
+
+            document.getElementById(from).textContent = (fromAmount - amount).toFixed(2);
+            document.getElementById(to).textContent = (toAmount + amount).toFixed(2);
         }
 
-        function addTodo() {
-            let text = document.getElementById("todoText").value;
-            let amount = parseFloat(document.getElementById("todoAmount").value);
-            if (!text || isNaN(amount) || amount <= 0) return alert("يرجى إدخال بيانات صحيحة.");
+        function withdrawMoney() {
+            let category = document.getElementById("withdrawCategory").value;
+            let withdrawAmount = parseFloat(document.getElementById("withdrawAmount").value);
+            let currentAmount = parseFloat(localStorage.getItem(category)) || 0;
 
-            let todos = JSON.parse(localStorage.getItem("todos")) || [];
-            todos.push({ text, amount });
-            localStorage.setItem("todos", JSON.stringify(todos));
-            loadData();
+            if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
+                alert("يرجى إدخال مبلغ صالح.");
+                return;
+            }
+
+            if (withdrawAmount > currentAmount) {
+                alert("المبلغ المطلوب سحبه غير متوفر.");
+                return;
+            }
+
+            let newAmount = currentAmount - withdrawAmount;
+            localStorage.setItem(category, newAmount.toFixed(2));
+            document.getElementById(category).textContent = newAmount.toFixed(2);
         }
 
-        function saveData(category, amount) {
-            localStorage.setItem(category, amount);
-            document.getElementById(category).textContent = amount;
-        }
-
-        function loadData() {
-            ["personal", "investment", "mandatory"].forEach(cat => {
-                document.getElementById(cat).textContent = localStorage.getItem(cat) || "0.00";
-            });
-
-            let todoList = JSON.parse(localStorage.getItem("todos")) || [];
-            let listContainer = document.getElementById("todoList");
-            listContainer.innerHTML = "";
-            todoList.forEach(todo => {
-                listContainer.innerHTML += `<div class="todo-item">${todo.text}: ${todo.amount} JOD</div>`;
-            });
-        }
-
-        function clearAllData() {
-            localStorage.clear();
-            location.reload();
+        function resetCategory() {
+            let category = document.getElementById("resetCategory").value;
+            localStorage.setItem(category, "0");
+            document.getElementById(category).textContent = "0.00";
         }
     </script>
 
